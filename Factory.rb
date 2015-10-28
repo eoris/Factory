@@ -11,14 +11,21 @@ class Factory
       end
 
       define_method ("[]") do |attribute|
-        attribute.class == Fixnum ? instance_variable_get("@#{attributes[attribute]}") : instance_variable_get("@#{attribute}")
+        if attribute.class == Fixnum
+          instance_variable_get("@#{attributes[attribute]}")
+        else
+          instance_variable_get("@#{attribute}")
       end
 
       define_method ("[]=") do |attribute, value|
-        attribute.class == Fixnum ? instance_variable_set("@#{attributes[attribute]}", value) : instance_variable_set("@#{attribute}", value)
+        if attribute.class == Fixnum
+          instance_variable_set("@#{attributes[attribute]}", value)
+        else
+          instance_variable_set("@#{attribute}", value)
       end
 
       class_eval(&block) if block_given?
+
     end
   end
 end
