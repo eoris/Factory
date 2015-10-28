@@ -15,6 +15,7 @@ class Factory
           instance_variable_get("@#{attributes[attribute]}")
         else
           instance_variable_get("@#{attribute}")
+        end
       end
 
       define_method ("[]=") do |attribute, value|
@@ -22,6 +23,7 @@ class Factory
           instance_variable_set("@#{attributes[attribute]}", value)
         else
           instance_variable_set("@#{attribute}", value)
+        end
       end
 
       class_eval(&block) if block_given?
