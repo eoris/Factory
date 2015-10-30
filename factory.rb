@@ -30,8 +30,8 @@ class Factory
       end
 
       define_method :each do |&attribute|
-        values = instance_variables.map { |i| instance_variable_get(i) }
-        values.each(&attribute)
+        instance_variables.map { |i| instance_variable_get(i) }.
+        each(&attribute)
       end
 
       class_eval(&block) if block_given?
