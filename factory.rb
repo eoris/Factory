@@ -1,6 +1,6 @@
 class Factory
   def self.new(*attributes, &block)
-    class_name = attributes.shift.capitalize if attributes[0].is_a?(String)
+    class_name = attributes.shift.capitalize if attributes.first.is_a?(String)
     class_name_from_string = Class.new do
       class_name.to_s
       attributes.each do |attribute|
