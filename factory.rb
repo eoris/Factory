@@ -28,51 +28,50 @@ class Factory
         end
       end
 
-      define_method :each do |&attribute_value|
-        values.each(&attribute_value)
+      define_method :each do |&value|
+        values.each(&value)
       end
 
-      # define_method :each_pair do |&attribute|
-      #   joe.each_pair {|name, value| puts("#{name} => #{value}") }
-      # end
+      define_method :each_pair do |&name_value|
+        hash.each_pair(&name_value)
+      end
 
-      # define_method :eql? do
-      # end
+      define_method :eql? do |other|
+        hash.eql?(other.hash)
+      end
+      alias_method :==, :eql?
 
-      # define_method :hash do
-      # end
+      define_method :hash do
+        Hash[instance_variables.map { |name| [name.to_s.delete('@').to_sym, instance_variable_get(name)] }]
+      end
+      alias_method :to_h, :hash
 
-      # define_method :inspect do
-      # end
+      define_method :length do
+        values.size
+      end
+      alias_method :size, :length
 
-      # define_method :length do
-      # end
+      define_method :members do
+        instance_variables.map { |member| member.to_s.delete('@').to_sym }
+      end
 
-      # define_method :members do
-      # end
-
-      # define_method :select do
-      # end
-
-      # define_method :size do
-      # end
+      define_method :select do |&member_value|
+        values.select(&member_value)
+      end
 
       define_method :to_a do
         instance_variables.map { |i| instance_variable_get(i) }
       end
-      alias_method :values, :to_a
+      alias_method :values,  :to_a
 
-      # define_method :to_h do
-      # end
+      define_method :inspect do
+        super().delete('@')
+      end
+      alias_method :to_s, :inspect
 
-      # define_method :to_s do
-      # end
-
-      # define_method :values do
-      # end
-
-      # define_method :values_at do
-      # end
+      define_method :values_at do |*index|
+        values.values_at(*index)
+      end
 
       class_eval(&block) if block_given?
     end
@@ -88,6 +87,7 @@ Customer = Factory.new(:name, :address, :zip) do
 end
 
 joe = Customer.new('Joe Smith', '123 Maple, Anytown NC', 12345)
+jon = Customer.new('Joe Smith', '123 Maple, Anytown NC', 12345)
 joe.name
 joe['name']
 joe[:name]
@@ -95,5 +95,57 @@ joe[0]
 joe.greeting
 
 Factory.new('Customer', :name, :address, :zip)
+
+# each
 joe.each { |i| puts i }
-#joe.each_pair {|name, value| puts("#{name} => #{value}") }
+
+# each_pair
+joe.each_pair {|name, value| puts("#{name} => #{value}") }
+
+# hash
+joe.hash
+
+joe = Customer.new('Joe Smith', '123 Maple, Anytown NC', 12345)
+jon = Customer.new('Joe Smith', '123 Maple, Anytown NC', 12345)
+# eql?
+joe.eql?(jon)
+# ==
+joe == jon
+
+joe = Customer.new('Joe Smith', '123 Maple, Anytown NC', 12345)
+jon = Customer.new('Joe Smith', '123 Maple, Anytown NC', 1234)
+# eql?
+joe.eql?(jon)
+# ==
+joe == jon
+
+# length
+joe.length
+# size
+joe.size
+
+# members
+joe.members
+
+# select
+Lots = Factory.new(:a, :b, :c, :d, :e, :f)
+l = Lots.new(11, 22, 33, 44, 55, 66)
+l.select {|v| (v % 2).zero? } #=> [22, 44, 66]
+
+# to_h
+joe = Customer.new("Joe Smith", "123 Maple, Anytown NC", 12345)
+joe.to_h[:address]   #=> "123 Maple, Anytown NC"
+
+# to_a
+joe.to_a
+# values
+joe.values
+
+# inspect
+joe.to_s #=> "#<struct Customer name=\"Joe Smith\", address=\"123 Maple, Anytown NC\", zip=12345>"
+
+# to_s
+joe.to_s
+
+# values_at
+joe.values_at(0, 1)
