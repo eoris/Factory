@@ -1,7 +1,7 @@
 class Factory
   def self.new(*attributes, &block)
-    class_name = attributes.shift.capitalize if attributes.first.is_a?(String)
-    class_name_from_string = Class.new do
+    class_name_from_string = attributes.shift.capitalize if attributes.first.is_a?(String)
+    class_name = Class.new do
       attributes.each do |attribute|
         attr_accessor attribute
       end
@@ -75,8 +75,8 @@ class Factory
 
       class_eval(&block) if block_given?
     end
-    const_set(class_name, class_name_from_string) if class_name
-    class_name_from_string
+    const_set(class_name_from_string, class_name) if class_name_from_string
+    class_name
   end
 end
 
