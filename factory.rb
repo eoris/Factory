@@ -12,7 +12,7 @@ class Factory
         end
       end
 
-      define_method '[]' do |attribute|
+      define_method :[] do |attribute|
         if attribute.class == Fixnum
           instance_variable_get("@#{attributes[attribute]}")
         else
@@ -20,7 +20,7 @@ class Factory
         end
       end
 
-      define_method '[]=' do |attribute, value|
+      define_method :[]= do |attribute, value|
         if attribute.class == Fixnum
           instance_variable_set("@#{attributes[attribute]}", value)
         else
@@ -142,7 +142,7 @@ joe.to_a
 joe.values
 
 # inspect
-joe.to_s #=> "#<struct Customer name=\"Joe Smith\", address=\"123 Maple, Anytown NC\", zip=12345>"
+joe.to_s
 
 # to_s
 joe.to_s
